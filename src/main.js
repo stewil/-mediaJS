@@ -1,12 +1,13 @@
 (function () {
     'use strict';
 
-    window['atMedia'] = atMedia || new AtMedia();
+    window['atMedia'] = new AtMedia();
+
 
     function AtMedia() {
 
         /*========================================================================
-         PRIVATE VARIABLES
+            PRIVATE VARIABLES
          ========================================================================*/
 
         var _settings = {
@@ -19,29 +20,26 @@
             onChangeQueue   =       [];
 
         /*========================================================================
-         PUBLIC METHODS
+            PUBLIC METHODS
          ========================================================================*/
-        this.create = init;
-        this.remove = remove;
+        this.create = create;
 
         /*========================================================================
-         LISTENERS / OBSERVERS / INIT
+            LISTENERS / OBSERVERS / INIT
          ========================================================================*/
-
-        var onResize;
 
         /*========================================================================
-         PRIVATE METHODS
+            PRIVATE METHODS
          ========================================================================*/
 
-        function init(settings){
+        function create(settings){
 
             for(var prop in settings){
                 _settings[prop] = prop;
             }
 
             if (!_settings.element) {
-                _settings.element = document.querySelector("[data-breakpoints]");
+                _settings.element = document.querySelector("[data-breakpoints]");;
                 if(!_settings.element){
                     _settings.element = document.createElement('div');
                     _settings.element.setAttribute('data-breakpoints', '');
@@ -49,21 +47,21 @@
                 }
             }
 
+            service = this;
+
             onViewportChange();
 
-            onResize = new onViewportChange;
-            window.addEventListener('resize', onResize);
-
-            service = this;
+            window.addEventListener('resize', onViewportChange);
 
             this.closestInRange         =       closestInRange;
             this.current                =       findCurrent();
             this.currentLargerThan      =       currentLargerThan;
             this.subscribe              =       subscribe;
+            this.remove                 =       remove;
         }
 
         function remove(){
-            window.removeEventListener('resize', onResize);
+            window.removeEventListener('resize', onViewportChange);
             service         = null;
             onChangeQueue   = [];
         }
@@ -120,7 +118,7 @@
         }
 
         function findCurrent() {
-            return (window.getComputedStyle(_settings.element[0], ':after').getPropertyValue('content').replace(/'|"/g, '') || "default");
+            return (window.getComputedStyle(_settings.element, ':after').getPropertyValue('content').replace(/'|"/g, '') || "default");
         }
 
     }
