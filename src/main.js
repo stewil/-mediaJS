@@ -16,8 +16,8 @@
         };
 
         var service,
-            body            =       document.querySelector('body'),
-            onChangeQueue   =       [];
+            body            =   document.querySelector('body'),
+            onChangeQueue   =   [];
 
         /*========================================================================
             PUBLIC METHODS
@@ -30,24 +30,19 @@
 
         /*========================================================================
             PRIVATE METHODS
-         ========================================================================*/
+        ========================================================================*/
 
         function create(settings){
+
+            service = this;
 
             for(var prop in settings){
                 _settings[prop] = prop;
             }
 
-            if (!_settings.element) {
-                _settings.element = document.querySelector("[data-breakpoints]");;
-                if(!_settings.element){
-                    _settings.element = document.createElement('div');
-                    _settings.element.setAttribute('data-breakpoints', '');
-                    body.appendChild(_settings.element);
-                }
+            if (!_settings.element || document.contains(_settings.element)) {
+                createBreakpointElement();
             }
-
-            service = this;
 
             onViewportChange();
 
@@ -56,8 +51,17 @@
             this.closestInRange         =       closestInRange;
             this.current                =       findCurrent();
             this.currentLargerThan      =       currentLargerThan;
-            this.subscribe              =       subscribe;
+            this.onChange               =       subscribe;
             this.remove                 =       remove;
+
+            function createBreakpointElement(){
+                _settings.element = document.querySelector("[data-breakpoints]");
+                if(!_settings.element){
+                    _settings.element = document.createElement('div');
+                    _settings.element.setAttribute('data-breakpoints', '');
+                    body.appendChild(_settings.element);
+                }
+            }
         }
 
         function remove(){
@@ -75,6 +79,16 @@
 
         function subscribe (fn){
             onChangeQueue.push(fn);
+
+            return new Subscriber(fn);
+
+            function Subscriber(fn){
+                this.remove = function(){
+                    if(onChangeQueue.indexOf(fn) > -1){
+                        onChangeQueue.splice(onChangeQueue.indexOf(fn), 1);
+                    }
+                }
+            }
         }
 
         function notify(){

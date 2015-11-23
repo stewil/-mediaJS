@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>@MediaJS</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/main.css"/>
+</head>
+<body>
+<div class="container">
+    <h1>@MediaJS</h1>
+    <p>Your current breakpoint is <span class="current-breakpoint"></span></p>
+    <button class="btn btn-default">Create New instance</button>
+    <button id="delete-btn" class="btn btn-danger">Delete Current Instance</button>
+</div>
+<script src="./js/atMedia.min.js"></script>
+<script>
+    var at = new atMedia.create({}),
+        element = document.querySelector('.current-breakpoint'),
+            deleteBtn = document.querySelector('#delete-btn'),
+            subscriber;
+
+    subscriber = at.onChange(function(breakpoint){
+        element.innerHTML = breakpoint;
+    });
+
+    deleteBtn.addEventListener('click', function(){
+        at.remove();
+    })
+
+</script>
+</body>
+</html>

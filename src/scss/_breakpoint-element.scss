@@ -1,0 +1,21 @@
+@import "./mixins";
+
+[data-breakpoints]{
+  position:fixed;
+  right:200%;
+  &:after{
+    content:"default";
+    @include breakpoint(xs){
+      content:"xs";
+    }
+    @include breakpoint(sm){
+      content:"sm";
+    }
+    @include breakpoint(md){
+      content:"md";
+    }
+    @include breakpoint(lg){
+      content:"lg";
+    }
+  }
+}
