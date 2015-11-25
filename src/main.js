@@ -12,7 +12,8 @@
 
         var _settings = {
             element:null,
-            breakpoints:["default", "xs", "sm", "md", "lg"]
+            breakpoints:["default", "xs", "sm", "md", "lg"],
+            debug:false
         };
 
         var service,
@@ -77,6 +78,11 @@
             }
         }
 
+        /**
+         * Accepts a Function to be executed on breakpoint change
+         * @param fn
+         * @returns {Subscriber}
+         */
         function subscribe (fn){
             onChangeQueue.push(fn);
 
@@ -91,14 +97,26 @@
             }
         }
 
+        /**
+         * Executes all stored subribers
+         */
         function notify(){
             var l = onChangeQueue.length;
 
             while(l--){
-                onChangeQueue[l](service.current);
+                try{
+                    onChangeQueue[l](service.current);
+                }catch(err){
+                    onChangeQueue.splice(l, 1);
+                }
             }
         }
 
+        /**
+         * Returns the breakpoint to match the current breakpoint in a range
+         * @param sizes
+         * @returns {*|string}
+         */
         function closestInRange(sizes) {
             var current = findCurrent(),
                 found;
@@ -120,6 +138,11 @@
             return found || "default";
         }
 
+        /**
+         * Returns true/false if the current breakpoint is larger the value supplied
+         * @param bp
+         * @returns {boolean}
+         */
         function currentLargerThan(bp) {
             var idx = _settings.breakpoints.indexOf(findCurrent()) + 1;
 
