@@ -17,7 +17,7 @@
     "type": "MIT",
     "url": ""
   },
-  "private": true,
+  "private": false,
   "scripts": {
   }
 }

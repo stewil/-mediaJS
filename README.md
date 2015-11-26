@@ -1,6 +1,16 @@
 #@MediaJS
 A library for sharing semantic naming of breakpoints between CSS compilers such as SASS or LESS.
 
+##Usage
+```javascript
+var at = new atMedia.create({
+        element:document.querySelector('[breakpoints]')
+    }),
+    subscriber = at.onChange(function(breakpoint){
+        element.innerHTML = breakpoint;
+    });
+```
+
 ##API
 | Name        | Type        | Description           | Example  |
 | ------------- | ------------- | ------------- | ----- |
