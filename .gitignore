@@ -2,3 +2,4 @@ archive
 node_modules
 *.iml
 .idea/
+bower_components/

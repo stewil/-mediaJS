@@ -51,8 +51,14 @@ function compileSCSS() {
 }
 
 function watchSrc(){
-    watch(config.scss, compileSCSS);
-    watch(config.javascript, compileJS);
-    watch(config.html, copyHtml);
+
+    watch(config.scss, build);
+    watch(config.javascript, build);
+    watch(config.html, build);
 }
 
+function build(){
+    compileSCSS();
+    compileJS();
+    copyHtml();
+}

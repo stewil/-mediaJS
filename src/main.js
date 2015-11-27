@@ -13,6 +13,7 @@
         var _settings = {
             element:null,
             breakpoints:["default", "xs", "sm", "md", "lg"],
+            debounce:50,
             debug:false
         };
 
@@ -35,6 +36,8 @@
 
         function create(settings){
 
+            var onResize = debounce(onViewportChange, _settings['debounce']);
+
             service = this;
 
             for(var prop in settings){
@@ -45,9 +48,7 @@
                 createBreakpointElement();
             }
 
-            onViewportChange();
-
-            window.addEventListener('resize', onViewportChange);
+            window.addEventListener('resize', onResize);
 
             this.closestInRange         =       closestInRange;
             this.current                =       findCurrent();
@@ -66,7 +67,8 @@
         }
 
         function remove(){
-            window.removeEventListener('resize', onViewportChange);
+            window.removeEventListener('resize', onResize);
+
             service         = null;
             onChangeQueue   = [];
         }
@@ -86,6 +88,9 @@
         function subscribe (fn){
             onChangeQueue.push(fn);
 
+            //We execute the function on subscription to ensure the function is returned
+            //a value on binding
+            fn(service.current);
             return new Subscriber(fn);
 
             function Subscriber(fn){
@@ -156,6 +161,32 @@
 
         function findCurrent() {
             return (window.getComputedStyle(_settings.element, ':after').getPropertyValue('content').replace(/'|"/g, '') || "default");
+        }
+
+        /**
+         * Credit : https://davidwalsh.name/function-debounce
+         * @param func
+         * @param wait
+         * @param immediate
+         * @returns {Function}
+         */
+        function debounce(func, wait, immediate) {
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate){
+                        func.apply(context, args);
+                    }
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow){
+                    func.apply(context, args);
+                }
+            };
         }
 
     }
