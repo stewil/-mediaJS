@@ -20,7 +20,6 @@
         var service,
             body            =   document.querySelector('body'),
             onChangeQueue   =   [];
-
         /*========================================================================
             PUBLIC METHODS
          ========================================================================*/
@@ -33,6 +32,7 @@
         /*========================================================================
             PRIVATE METHODS
         ========================================================================*/
+        var debounce = require('./components/debounce/debounce.js');
 
         function create(settings){
 
@@ -161,32 +161,6 @@
 
         function findCurrent() {
             return (window.getComputedStyle(_settings.element, ':after').getPropertyValue('content').replace(/'|"/g, '') || "default");
-        }
-
-        /**
-         * Credit : https://davidwalsh.name/function-debounce
-         * @param func
-         * @param wait
-         * @param immediate
-         * @returns {Function}
-         */
-        function debounce(func, wait, immediate) {
-            var timeout;
-            return function() {
-                var context = this, args = arguments;
-                var later = function() {
-                    timeout = null;
-                    if (!immediate){
-                        func.apply(context, args);
-                    }
-                };
-                var callNow = immediate && !timeout;
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-                if (callNow){
-                    func.apply(context, args);
-                }
-            };
         }
 
     }
