@@ -1,25 +1,25 @@
 {
-  "name":"atMediaJS",
-  "version": "0.0.1",
-  "description":"A library for sharing semantic naming of breakpoints between CSS compilers such as SASS or LESS.",
+  "name": "at-media-js",
+  "version": "0.1.0",
+  "description": "A library for sharing semantic naming of breakpoints between CSS compilers such as SASS or LESS.",
   "license": "MIT",
-  "main":[
-    "dist/js/atMedia.min.js"
+  "main": [
+    "dist/js/*.min.js"
   ],
-  "ignore":[],
-  "keywords":[],
-  "authors":[
+  "ignore": [],
+  "keywords": [],
+  "authors": [
     {
-      "name":"Steve Wilcox"
+      "name": "Steve Wilcox"
     }
   ],
-  "dependencies":{},
-  "devDependencies":{
-    "jasmine":"^2.3"
+  "dependencies": {},
+  "devDependencies": {
+    "jasmine": "^2.3"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/stewil/atMediaJS.git"
   },
-  "private":false
+  "private": false
 }

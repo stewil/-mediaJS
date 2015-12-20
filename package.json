@@ -1,6 +1,6 @@
 {
   "name": "at-media-js",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "devDependencies": {
     "browser-sync": "^2.7.13",
     "gulp": "^3.8.11",
@@ -9,24 +9,22 @@
     "gulp-sourcemaps": "^1.5.1",
     "del": "^2.2.0",
     "gulp-sass": "^2.1.1",
-    "gulp-bump":"~1.0.0",
-    "yargs":"~3.31.0",
-    "gulp-if-else":"~1.0.3",
-    "gulp-streamify":"^1.0.2",
+    "gulp-bump": "~1.0.0",
+    "yargs": "~3.31.0",
+    "gulp-if-else": "~1.0.3",
+    "gulp-streamify": "^1.0.2",
     "gulp-rename": "^1.2.2",
-    "browserify":"^12.0.1",
+    "browserify": "^12.0.1",
     "vinyl-source-stream": "^1.1.0",
-    "run-sequence":"~1.1.5 ",
-    "jasmine":"~2.1"
+    "run-sequence": "~1.1.5 ",
+    "jasmine": "~2.1"
   },
-  "engines": {
-  },
+  "engines": {},
   "homepage": "",
   "license": {
     "type": "MIT",
     "url": ""
   },
   "private": false,
-  "scripts": {
-  }
+  "scripts": {}
 }

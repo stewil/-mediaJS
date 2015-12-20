@@ -10,6 +10,7 @@ var gulp            =   require('gulp'),
     bump            =   require('gulp-bump'),
     ifElse          =   require('gulp-if-else'),
     runSequence     =   require('run-sequence'),
+    streamify       =   require('gulp-streamify'),
     source          =   require('vinyl-source-stream'),
     browserify      =   require('browserify'),
     browserSync     =   require('browser-sync').create(),
@@ -29,6 +30,7 @@ gulp.task('debug', bundleDebug);
 gulp.task('build', bundleBuild);
 gulp.task('watch', ['debug'], serve);
 gulp.task("bumpPackage", bumpPackage);
+gulp.task("bumpBowerPackage", bumpBowerPackage);
 
 //  JAVASCRIPT
 //-----------------------------------------------------------------------
@@ -55,6 +57,9 @@ gulp.task('reloadHTML', ['debugHTML'], reloadBrowser);
 function bundle(dir, taskPrefix){
     return clearDistFiles(dir, function(){
         runSequence([
+            'bumpPackage',
+            'bumpBowerPackage'
+        ],[
             taskPrefix + 'JS',
             taskPrefix + 'SASS',
             taskPrefix + 'HTML']);
@@ -82,11 +87,17 @@ function debugHTML(){
 
 function compileJS(dir) {
 
-    var jsBundle = browserify(config.application).bundle();
+    var jsBundle    = browserify(config.application).bundle(),
+        jsFileName  = packageJson.name + '-v' + packageJson.version;
 
     return jsBundle
         .pipe(source(config.application))
-        .pipe(rename(packageJson.name + '-v' + packageJson.version + '.js'))
+        .pipe(streamify(sourcemaps.init()))
+        .pipe(rename(jsFileName + '.js'))
+        .pipe(gulp.dest(dir + 'js/'))
+        .pipe(streamify(uglify()))
+        .pipe(rename(jsFileName + '.min.js'))
+        .pipe(streamify(sourcemaps.write('.')))
         .pipe(gulp.dest(dir + 'js/'));
 }
 
@@ -124,7 +135,23 @@ function bumpPackage(){
                 return 'patch';
             }
         })()}))
-        .pipe(gulp.dest(config.dist));
+        .pipe(gulp.dest('./'));
+}
+
+function bumpBowerPackage(){
+    return gulp.src('./bower.json')
+        .pipe(bump({type:(function(){
+            if(argv.major){
+                return 'major';
+            }
+            if(argv.minor){
+                return 'minor';
+            }
+            if(argv.patch){
+                return 'patch';
+            }
+        })()}))
+        .pipe(gulp.dest('./'));
 }
 
 function serve(){

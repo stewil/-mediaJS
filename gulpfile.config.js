@@ -8,7 +8,7 @@ var GulpConfig = (function(){
         this.application = this.source + 'main.js';
         this.javascript = [
             this.source + 'main.js',
-            this.source + 'js/*.js'
+            this.source + '**/*.js'
         ];
         this.html = [
             this.source + "index.html"
