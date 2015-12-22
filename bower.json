@@ -1,5 +1,5 @@
 {
-  "name": "at-media-js",
+  "name": "atmedia",
   "version": "0.1.0",
   "description": "A library for sharing semantic naming of breakpoints between CSS compilers such as SASS or LESS.",
   "license": "MIT",

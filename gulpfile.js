@@ -7,6 +7,7 @@ var gulp            =   require('gulp'),
     rename          =   require('gulp-rename'),
     uglify          =   require('gulp-uglify'),
     del             =   require('del'),
+    fs              =   require('fs'),
     bump            =   require('gulp-bump'),
     ifElse          =   require('gulp-if-else'),
     runSequence     =   require('run-sequence'),
@@ -36,34 +37,45 @@ gulp.task("bumpBowerPackage", bumpBowerPackage);
 //-----------------------------------------------------------------------
 gulp.task("debugJS", debugJS);
 gulp.task("buildJS", buildJS);
-gulp.task('reloadJS', ['debugJS'], reloadBrowser);
+gulp.task('reloadJS', ['debug'], reloadBrowser);
 
 //  SASS
 //-----------------------------------------------------------------------
 gulp.task("buildSASS", buildSASS);
 gulp.task("debugSASS", debugSASS);
-gulp.task('reloadSASS', ['debugSASS'], reloadBrowser);
+gulp.task('reloadSASS', ['debug'], reloadBrowser);
 
 //  HTML
 //-----------------------------------------------------------------------
 gulp.task("debugHTML", debugHTML);
 gulp.task("buildHTML", buildHTML);
-gulp.task('reloadHTML', ['debugHTML'], reloadBrowser);
+gulp.task('reloadHTML', ['debug'], reloadBrowser);
 
 /*========================================================================
     FUNCTIONS
  ========================================================================*/
 
 function bundle(dir, taskPrefix){
-    return clearDistFiles(dir, function(){
-        runSequence([
-            'bumpPackage',
-            'bumpBowerPackage'
-        ],[
+
+    var tasks = [],
+        config;
+
+    return clearDistFiles(dir, function() {
+        if (taskPrefix === 'build') {
+            tasks.push([
+                'bumpPackage',
+                'bumpBowerPackage'
+            ]);
+        }
+        tasks.push([
             taskPrefix + 'JS',
             taskPrefix + 'SASS',
-            taskPrefix + 'HTML']);
-    })
+            taskPrefix + 'HTML'
+        ]);
+        config = fs.readFileSync('./package.json', 'utf-8');
+        packageJson = JSON.parse(config);
+        return runSequence.apply(null, tasks);
+    });
 }
 
 function bundleBuild(){
@@ -109,8 +121,12 @@ function buildJS(){
 }
 
 function compileSASS(dir) {
+
+    var cssFileName = packageJson.name + '-v' + packageJson.version;
+
     return gulp.src(config.scss)
         .pipe(sass())
+        .pipe(rename(cssFileName + '.min.css'))
         .pipe(gulp.dest(dir + 'css'));
 }
 
