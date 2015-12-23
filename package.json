@@ -2,6 +2,7 @@
   "name": "atmedia",
   "version": "0.1.0",
   "devDependencies": {
+    "gulp-template":"~3.1.0",
     "browser-sync": "^2.7.13",
     "gulp": "^3.8.11",
     "gulp-autoprefixer": "^1.0.1",

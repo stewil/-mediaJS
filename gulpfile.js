@@ -13,6 +13,7 @@ var gulp            =   require('gulp'),
     runSequence     =   require('run-sequence'),
     streamify       =   require('gulp-streamify'),
     source          =   require('vinyl-source-stream'),
+    template        =   require('gulp-template'),
     browserify      =   require('browserify'),
     browserSync     =   require('browser-sync').create(),
     argv            =   require('yargs').argv,
@@ -57,8 +58,7 @@ gulp.task('reloadHTML', ['debug'], reloadBrowser);
 
 function bundle(dir, taskPrefix){
 
-    var tasks = [],
-        config;
+    var tasks = [];
 
     return clearDistFiles(dir, function() {
         if (taskPrefix === 'build') {
@@ -72,8 +72,7 @@ function bundle(dir, taskPrefix){
             taskPrefix + 'SASS',
             taskPrefix + 'HTML'
         ]);
-        config = fs.readFileSync('./package.json', 'utf-8');
-        packageJson = JSON.parse(config);
+
         return runSequence.apply(null, tasks);
     });
 }
@@ -85,22 +84,23 @@ function bundleDebug(){
     return bundle(config.debug, 'debug')
 }
 
-function copyHtml(dir){
-    return gulp.src(config.html)
+function createHtml(dir){
+    gulp.src(config.html)
+        .pipe(template({name: createBundleName()}))
         .pipe(gulp.dest(dir));
 }
 
 function buildHTML(){
-    return copyHtml(config.dist);
+    return createHtml(config.dist);
 }
 function debugHTML(){
-    return copyHtml(config.debug);
+    return createHtml(config.debug);
 }
 
 function compileJS(dir) {
 
     var jsBundle    = browserify(config.application).bundle(),
-        jsFileName  = packageJson.name + '-v' + packageJson.version;
+        jsFileName  = createBundleName();
 
     return jsBundle
         .pipe(source(config.application))
@@ -122,11 +122,11 @@ function buildJS(){
 
 function compileSASS(dir) {
 
-    var cssFileName = packageJson.name + '-v' + packageJson.version;
+    var cssFileName = createBundleName();
 
     return gulp.src(config.scss)
         .pipe(sass())
-        .pipe(rename(cssFileName + '.min.css'))
+        .pipe(rename(cssFileName + '.css'))
         .pipe(gulp.dest(dir + 'css'));
 }
 
@@ -195,4 +195,10 @@ function clearDistFiles(dir, fn){
             fn();
         }
     });
+}
+
+function createBundleName(){
+    var config = fs.readFileSync('./package.json', 'utf-8');
+    packageJson = JSON.parse(config);
+    return packageJson.name + '-' + packageJson.version;
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>@MediaJS</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/main.css"/>
+    <link rel="stylesheet" href="css/<%= name %>.css"/>
 </head>
 <body>
 <div class="container">
@@ -13,7 +13,7 @@
     <button class="btn btn-default">Create New instance</button>
     <button id="delete-btn" class="btn btn-danger">Delete Current Instance</button>
 </div>
-<script src="./js/at-media-js-v0.0.1.min.js"></script>
+<script src="./js/<%= name %>.min.js"></script>
 <script>
     var at          = new atMedia.create({}),
         element     = document.querySelector('.current-breakpoint'),
@@ -21,12 +21,7 @@
         subscriber;
 
     subscriber = at.onChange(function(breakpoint){
-
         element.innerHTML = breakpoint;
-        
-        if(at.currentLargerThan('sm')){
-
-        }
     });
 
     deleteBtn.addEventListener('click', function(){
