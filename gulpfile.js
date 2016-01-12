@@ -6,6 +6,7 @@ var gulp            =   require('gulp'),
     sourcemaps      =   require('gulp-sourcemaps'),
     rename          =   require('gulp-rename'),
     uglify          =   require('gulp-uglify'),
+    beautify        =   require('gulp-beautify'),
     del             =   require('del'),
     fs              =   require('fs'),
     bump            =   require('gulp-bump'),
@@ -44,13 +45,13 @@ gulp.task('reloadJS', ['debug'], reloadBrowser);
 //-----------------------------------------------------------------------
 gulp.task("buildSASS", buildSASS);
 gulp.task("debugSASS", debugSASS);
-gulp.task('reloadSASS', ['debug'], reloadBrowser);
+gulp.task('reloadSASS', reloadSASS);
 
 //  HTML
 //-----------------------------------------------------------------------
 gulp.task("debugHTML", debugHTML);
 gulp.task("buildHTML", buildHTML);
-gulp.task('reloadHTML', ['debug'], reloadBrowser);
+gulp.task('reloadHTML', reloadHTML);
 
 /*========================================================================
     FUNCTIONS
@@ -80,6 +81,7 @@ function bundle(dir, taskPrefix){
 function bundleBuild(){
     return bundle(config.dist, 'build')
 }
+
 function bundleDebug(){
     return bundle(config.debug, 'debug')
 }
@@ -93,8 +95,13 @@ function createHtml(dir){
 function buildHTML(){
     return createHtml(config.dist);
 }
+
 function debugHTML(){
     return createHtml(config.debug);
+}
+
+function reloadHTML(){
+    return runSequence(['debugHTML'], ['reload']);
 }
 
 function compileJS(dir) {
@@ -104,6 +111,7 @@ function compileJS(dir) {
 
     return jsBundle
         .pipe(source(config.application))
+        .pipe(streamify(beautify({indentSize:2})))
         .pipe(streamify(sourcemaps.init()))
         .pipe(rename(jsFileName + '.js'))
         .pipe(gulp.dest(dir + 'js/'))
@@ -116,8 +124,13 @@ function compileJS(dir) {
 function debugJS(){
     return compileJS(config.debug);
 }
+
 function buildJS(){
     return compileJS(config.dist);
+}
+
+function reloadJS(){
+    return runSequence(['debugJS'], ['reload']);
 }
 
 function compileSASS(dir) {
@@ -136,6 +149,10 @@ function buildSASS(){
 
 function debugSASS(){
     return compileSASS(config.debug);
+}
+
+function reloadSASS(){
+    return runSequence(['debugSASS'], ['reload']);
 }
 
 function bumpPackage(){
